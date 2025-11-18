@@ -6,25 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weihnachtskarte</title>
 
-    <!-- A-Frame -->
+    <!-- A-Frame 0.6.0 (für AR.js nötig) -->
     <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
 
     <!-- AR.js für A-Frame -->
     <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
 
+    <!-- Animation component (für 0.6.0 zwingend!) -->
+    <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script>
 </head>
 
-<body style='margin: 0; overflow: hidden;'>
+<body style='margin:0; overflow:hidden;'>
 
     <a-scene embedded arjs>
 
-        <!-- Schneefall-Container -->
+        <!-- Container für Schneefall -->
         <a-entity id="snow"></a-entity>
 
         <!-- Dein Schneemann -->
         <a-image src="snowman.png" position="0 0 0"></a-image>
 
-        <!-- Marker Kamera -->
+        <!-- Marker-Kamera -->
         <a-marker-camera type="pattern" url="pattern-Piktogramm MArker.patt"></a-marker-camera>
 
     </a-scene>
@@ -34,45 +36,34 @@
 
         for (let i = 0; i < 100; i++) {
             const plane = document.createElement('a-plane');
-            const size = (Math.random() * .3 + 0.03).toFixed(2);
+            const size = (Math.random() * 0.3 + 0.03).toFixed(2);
 
-            const startX = (Math.random() - 0.5) * 8;
-            const startY = Math.random() * 6 + 2;
-            const startZ = (Math.random() - 0.5) * 8;
+            const startX = (Math.random() - 0.5) * 4;
+            const startY = Math.random() * 4 + 2;
+            const startZ = (Math.random() - 0.5) * 4;
 
-            const endY = -10;
+            const endY = -5; // → Je kleiner, desto weiter fällt der Schnee runter
 
             plane.setAttribute('width', size);
             plane.setAttribute('height', size);
             plane.setAttribute('position', `${startX} ${startY} ${startZ}`);
-            plane.setAttribute('material', {
-                src: 'assets/snowflake.png',
-                alphaTest: 0.5,
-                transparent: true
-            });
 
-            const duration = 4000 + Math.random() * 3000;
+            plane.setAttribute(
+                'material',
+                'src: snowflake.png; transparent: true; alphaTest: 0.5'
+            );
 
-            plane.setAttribute('animation__fall', {
-                property: 'position',
-                from: `${startX} ${startY} ${startZ}`,
-                to: `${startX} ${endY} ${startZ}`,
-                dur: duration,
-                easing: 'linear',
-                loop: true
-            });
+            const duration = 6000 + Math.random() * 3000; // → Geschwindigkeit
 
-            plane.addEventListener('animationloop', () => {
-                const newX = (Math.random() - 0.5) * 8;
-                const newY = Math.random() * 6 + 2;
-                const newZ = (Math.random() - 0.5) * 8;
-
-                plane.setAttribute('animation__fall', {
-                    from: `${newX} ${newY} ${newZ}`,
-                    to: `${newX} ${endY} ${newZ}`,
-                    dur: 4000 + Math.random() * 3000
-                });
-            });
+            plane.setAttribute(
+                'animation__fall',
+                `property: position; 
+                 from: ${startX} ${startY} ${startZ}; 
+                 to: ${startX} ${endY} ${startZ}; 
+                 dur: ${duration}; 
+                 easing: linear; 
+                 loop: true`
+            );
 
             targetObject.appendChild(plane);
         }
